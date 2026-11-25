@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Εργαστήρι Ριζών — Άλγεβρα Α' Λυκείου (§2.4)</title>
+    <style>
+        :root {
+            --bg-dark: #070d19;
+            --bg-gradient: radial-gradient(circle at 20% 20%, #0f1c36 0%, #070d19 70%);
+            --panel-bg: rgba(13, 21, 38, 0.92);
+            --card-bg: rgba(20, 32, 56, 0.78);
+            --accent: #10b981;
+            --accent-hover: #059669;
+            --cyan: #38bdf8;
+            --pink: #f43f5e;
+            --amber: #f59e0b;
+            --gold: #fbbf24;
+            --purple: #a855f7;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(56, 189, 248, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 28px;
+            background: rgba(7, 13, 25, 0.75);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(168, 85, 247, 0.18);
+            border: 1px solid var(--purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            color: #d8b4fe;
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+        }
+
+        .brand-text small {
+            display: block;
+            font-size: 10.5px;
+            color: var(--cyan);
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .brand-text h1 {
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .stars-badge {
+            background: var(--panel-bg);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            border-color: var(--cyan);
+            background: rgba(56, 189, 248, 0.15);
+            transform: rotate(30deg);
+        }
+
+        /* Main Layout */
+        main {
+            flex: 1;
+            max-width: 1220px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 22px 24px 32px;
+            display: grid;
+            grid-template-columns: 1fr 1.15fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+        /* Left Column: Visual Lab & Theory */
+        .left-col {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .theory-card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(168, 85, 247, 0.35);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45);
+        }
+
+        .theory-badge {
+            display: inline-block;
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #d8b4fe;
+            background: rgba(168, 85, 247, 0.18);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            padding: 3px 10px;
+            border-radius: 999px;
+            margin-bottom: 8px;
+        }
+
+        .theory-card h3 {
+            font-size: 16px;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .theory-card p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.55;
+            margin-bottom: 12px;
+        }
+
+        .theory-formula {
+            background: rgba(7, 13, 25, 0.75);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--cyan);
+            text-align: center;
+        }
+
+        /* Visual / Interactive Sandbox Box on Left */
+        .visual-stage {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px;
+            min-height: 310px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45);
+        }
+
+        .stage-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+        }
+
+        /* 2D Geometric SVG / Grid Visuals */
+        .geo-box-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+        }
+
+        .square-grid {
+            display: grid;
+            gap: 3px;
+            background: rgba(56, 189, 248, 0.12);
+            padding: 6px;
+            border: 2px solid var(--cyan);
+            border-radius: 8px;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
+            transition: all 0.25s ease;
+        }
+
+        .square-cell {
+            width: 26px;
+            height: 26px;
+            background: rgba(56, 189, 248, 0.35);
+            border-radius: 4px;
+            transition: background 0.25s;
+        }
+
+        .square-grid.solved {
+            border-color: var(--accent);
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.35);
+        }
+
+        .square-grid.solved .square-cell {
+            background: rgba(16, 185, 129, 0.45);
+        }
+
+        .geo-caption {
+            margin-top: 12px;
+            font-size: 13px;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* Comparison Table in Visual Stage (Step 4) */
+        .props-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .props-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .props-table th {
+            background: rgba(56, 189, 248, 0.14);
+            color: var(--cyan);
+            padding: 10px 8px;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .props-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-main);
+        }
+
+        .props-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge-ok {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(16, 185, 129, 0.18);
+            color: #6ee7b7;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .badge-no {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(244, 63, 94, 0.18);
+            color: #fda4af;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* Right Column: Mission Panel */
+        .control-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.55);
+        }
+
+        .mission-tabs {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            margin-bottom: 16px;
+            background: rgba(7, 13, 25, 0.7);
+            padding: 6px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-btn {
+            padding: 8px 4px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .tab-btn.active {
+            background: rgba(56, 189, 248, 0.16);
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        .tab-stars {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .tab-btn.solved .tab-stars {
+            color: var(--gold);
+        }
+
+        .mission-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .mission-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .mission-tag {
+            font-size: 11px;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .hint-btn {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: var(--gold);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .hint-btn:hover {
+            background: rgba(245, 158, 11, 0.28);
+        }
+
+        .mission-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .mission-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.55;
+        }
+
+        .mission-desc strong {
+            color: var(--cyan);
+        }
+
+        .hint-box {
+            margin-top: 10px;
+            padding: 9px 12px;
+            background: rgba(245, 158, 11, 0.12);
+            border-left: 3px solid var(--gold);
+            border-radius: 6px;
+            font-size: 12.5px;
+            color: #fde68a;
+            display: none;
+        }
+
+        /* Interactive Controls */
+        .interaction-area {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .slider-item {
+            background: var(--card-bg);
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .val-pill {
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 700;
+            background: rgba(56, 189, 248, 0.18);
+            color: #7dd3fc;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #1e293b;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--cyan);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+        }
+
+        .preset-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            flex: 1;
+            min-width: 110px;
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: #7dd3fc;
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: rgba(56, 189, 248, 0.24);
+            color: white;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 10px;
+            color: var(--text-main);
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .option-btn:hover {
+            border-color: var(--cyan);
+            background: rgba(56, 189, 248, 0.12);
+        }
+
+        .option-btn.selected {
+            border-color: var(--cyan);
+            background: rgba(56, 189, 248, 0.22);
+            color: var(--cyan);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+        }
+
+        .live-readout {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 11px 14px;
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 12px;
+            margin-bottom: 14px;
+        }
+
+        .live-readout span {
+            font-size: 12.5px;
+            color: var(--text-muted);
+        }
+
+        .live-readout strong {
+            font-size: 16px;
+            color: var(--cyan);
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 12px;
+            background: var(--accent);
+            color: #022c22;
+            font-weight: 700;
+            font-size: 14.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.35);
+        }
+
+        .action-btn:hover {
+            background: var(--accent-hover);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .feedback-box {
+            margin-top: 12px;
+            padding: 11px 13px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.45;
+            display: none;
+        }
+
+        .feedback-box.success {
+            display: block;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid var(--accent);
+            color: #6ee7b7;
+        }
+
+        .feedback-box.error {
+            display: block;
+            background: rgba(244, 63, 94, 0.15);
+            border: 1px solid var(--pink);
+            color: #fda4af;
+        }
+
+        @media (max-width: 920px) {
+            main {
+                grid-template-columns: 1fr;
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <div class="brand-icon">√α</div>
+            <div class="brand-text">
+                <small>ΑΛΓΕΒΡΑ Α' ΛΥΚΕΙΟΥ · §2.4</small>
+                <h1>Εργαστήρι Ριζών & Ιδιοτήτων</h1>
+            </div>
+        </div>
+
+        <div class="header-controls">
+            <div class="stars-badge">★ <span id="stars-count">0</span> / 15</div>
+            <button class="icon-btn" title="Επαναφορά προόδου" onclick="resetGame()">↻</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Αριστερή Στήλη: Θεωρία + Οπτικό Εργαστήρι / Πίνακας Δοκιμών -->
+        <section class="left-col">
+            <div class="theory-card">
+                <span class="theory-badge">ΘΕΩΡΙΑ §2.4 · ΣΧΟΛΙΚΟ ΒΙΒΛΙΟ</span>
+                <h3 id="theory-title">Ορισμός Τετραγωνικής Ρίζας</h3>
+                <p id="theory-text">Για κάθε <strong>α ≥ 0</strong>, η τετραγωνική ρίζα <strong>√α</strong> συμβολίζει τον <strong>μη αρνητικό</strong> αριθμό που, όταν υψωθεί στο τετράγωνο, δίνει τον α.</p>
+                <div class="theory-formula" id="theory-formula">√α ≥ 0   και   (√α)² = α</div>
+            </div>
+
+            <div class="visual-stage">
+                <div class="stage-header">
+                    <span id="stage-title">ΟΠΤΙΚΗ ΑΝΑΠΑΡΑΣΤΑΣΗ</span>
+                    <span id="stage-subtitle">1 κελί = 1 μονάδα²</span>
+                </div>
+                <div id="stage-content" style="width: 100%; display: flex; justify-content: center;"></div>
+            </div>
+        </section>
+
+        <!-- Δεξιά Στήλη: 5 Βήματα / Αποστολές -->
+        <section class="control-panel">
+            <div class="mission-tabs">
+                <button class="tab-btn active" id="tab-0" onclick="selectMission(0)">
+                    <span>Βήμα 1</span>
+                    <span class="tab-stars" id="tstars-0">☆☆☆</span>
+                </button>
+                <button class="tab-btn" id="tab-1" onclick="selectMission(1)">
+                    <span>Βήμα 2</span>
+                    <span class="tab-stars" id="tstars-1">☆☆☆</span>
+                </button>
+                <button class="tab-btn" id="tab-2" onclick="selectMission(2)">
+                    <span>Βήμα 3</span>
+                    <span class="tab-stars" id="tstars-2">☆☆☆</span>
+                </button>
+                <button class="tab-btn" id="tab-3" onclick="selectMission(3)">
+                    <span>Βήμα 4</span>
+                    <span class="tab-stars" id="tstars-3">☆☆☆</span>
+                </button>
+                <button class="tab-btn" id="tab-4" onclick="selectMission(4)">
+                    <span>Βήμα 5</span>
+                    <span class="tab-stars" id="tstars-4">☆☆☆</span>
+                </button>
+            </div>
+
+            <div class="mission-card">
+                <div class="mission-top-row">
+                    <span class="mission-tag" id="mission-tag">ΒΗΜΑ 1 ΑΠΟ 5</span>
+                    <button class="hint-btn" onclick="toggleHint()">💡 Βοήθεια</button>
+                </div>
+                <h2 class="mission-title" id="mission-title">Η Πλευρά του Τετραγώνου</h2>
+                <p class="mission-desc" id="mission-desc"></p>
+                <div class="hint-box" id="hint-box"></div>
+            </div>
+
+            <div class="interaction-area" id="interaction-area"></div>
+
+            <div class="live-readout" id="live-readout">
+                <span id="readout-label">Τρέχον Εμβαδόν (x²):</span>
+                <strong id="readout-val">4</strong>
+            </div>
+
+            <button class="action-btn" onclick="checkSolution()">Έλεγχος Απάντησης</button>
+            <div class="feedback-box" id="feedback-box"></div>
+        </section>
+    </main>
+
+    <script>
+        // --- ΗΧΗΤΙΚΑ ΕΦΕ (Web Audio API) ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+
+            if (type === 'tick') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(540, now);
+                osc.frequency.exponentialRampToValueAtTime(760, now + 0.04);
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+                osc.start(now);
+                osc.stop(now + 0.04);
+            } else if (type === 'click') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(380, now);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+                osc.start(now);
+                osc.stop(now + 0.07);
+            } else if (type === 'success') {
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, i) => {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.type = 'triangle';
+                    o.connect(g);
+                    g.connect(audioCtx.destination);
+                    o.frequency.setValueAtTime(freq, now + i * 0.09);
+                    g.gain.setValueAtTime(0.12, now + i * 0.09);
+                    g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.09 + 0.35);
+                    o.start(now + i * 0.09);
+                    o.stop(now + i * 0.09 + 0.35);
+                });
+            } else if (type === 'error') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(190, now);
+                osc.frequency.linearRampToValueAtTime(130, now + 0.25);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            }
+        }
+
+        // --- ΔΕΔΟΜΕΝΑ 5 ΒΗΜΑΤΩΝ ---
+        const missions = [
+            {
+                mode: 'square_slider',
+                tag: "ΒΗΜΑ 1 / ΓΕΩΜΕΤΡΙΚΟ ΕΝΑΥΣΜΑ",
+                title: "Η Πλευρά του Τετραγώνου (√25)",
+                desc: "Ένα τετράγωνο έχει εμβαδόν <strong>E = 25</strong>. Ρύθμισε την πλευρά <strong>x</strong> ώστε x² = 25. Επειδή το μήκος δεν μπορεί να είναι αρνητικό, η τιμή αυτή είναι η <strong>√25</strong>.",
+                hint: "Ποιος μη αρνητικός αριθμός υψωμένος στο τετράγωνο (x · x) δίνει 25;",
+                theoryTitle: "Ορισμός Τετραγωνικής Ρίζας",
+                theoryText: "Για κάθε <strong>α ≥ 0</strong>, η τετραγωνική ρίζα <strong>√α</strong> συμβολίζει τον <strong>μη αρνητικό</strong> αριθμό που, όταν υψωθεί στο τετράγωνο, δίνει τον α.",
+                theoryFormula: "√α ≥ 0   και   (√α)² = α",
+                validate: (val) => val === 5,
+                successMsg: "Σωστά! Επειδή x ≥ 0 και 5² = 25, ισχύει √25 = 5.",
+                errorMsg: (val) => `Με πλευρά x = ${val}, το εμβαδόν είναι ${val}² = ${val*val}. Στόχος: 25.`
+            },
+            {
+                mode: 'quiz',
+                tag: "ΒΗΜΑ 2 / ΕΞΙΣΩΣΗ VS ΡΙΖΙΚΟ",
+                title: "Η Κρίσιμη Διάκριση",
+                desc: "Η εξίσωση <strong>x² = 9</strong> έχει δύο λύσεις (x = 3 ή x = -3). Ποια είναι όμως η μοναδική τιμή που εκφράζει το ριζικό <strong>√9</strong>;",
+                hint: "Θυμήσου τον ορισμό του σχολικού βιβλίου (§2.4): το σύμβολο √α εκφράζει ΠΑΝΤΟΤΕ μη αρνητικό αριθμό!",
+                theoryTitle: "Εξίσωση x² = α vs Σύμβολο √α",
+                theoryText: "Η εξίσωση x² = 9 έχει δύο πραγματικές λύσεις (3 και -3), αλλά το ριζικό <strong>√9</strong> συμβολίζει <strong>μόνο</strong> τη μη αρνητική λύση.",
+                theoryFormula: "x² = 9 ⇔ x = ±3   ενώ   √9 = 3",
+                options: [
+                    { id: 'a', label: '√9 = 3 ή √9 = -3' },
+                    { id: 'b', label: '√9 = 3 (αυστηρά)' },
+                    { id: 'c', label: '√9 = -3' },
+                    { id: 'd', label: 'Δεν ορίζεται' }
+                ],
+                correctOption: 'b',
+                successMsg: "Ακριβώς! Η εξίσωση x² = 9 έχει δύο λύσεις, αλλά το σύμβολο √9 ισούται αυστηρά με 3.",
+                errorMsg: () => "Προσοχή στην παγίδα! Το σύμβολο √α δεν παίρνει ποτέ αρνητική τιμή ή διπλό πρόσημο ±."
+            },
+            {
+                mode: 'quiz',
+                tag: "ΒΗΜΑ 3 / QUIZ ΠΑΓΙΔΑ",
+                title: "Πόσο κάνει √(-7)² ;",
+                desc: "Υπολόγισε την τιμή της παράστασης <strong>√(-7)²</strong> και την τιμή της τέταρτης ρίζας <strong>⁴√((-10)⁴)</strong>.",
+                hint: "Υπολόγισε πρώτα τη δύναμη μέσα στη ρίζα: (-7)² = 49. Ποια είναι η μη αρνητική τετραγωνική ρίζα του 49;",
+                theoryTitle: "Η Ταυτότητα ⁿ√(αⁿ) = |α| (ν άρτιος)",
+                theoryText: "Ενώ (-7)² = 49, δεν επιτρέπεται να γράψουμε √(-7)² = -7, γιατί η ρίζα είναι πάντοτε μη αρνητική. Ισχύει <strong>√(α²) = |α|</strong>.",
+                theoryFormula: "ⁿ√(αⁿ) = |α|   (για ν άρτιο)",
+                options: [
+                    { id: 'a', label: '-7 και -10' },
+                    { id: 'b', label: '7 και 10' },
+                    { id: 'c', label: '±7 και ±10' },
+                    { id: 'd', label: 'Δεν ορίζονται' }
+                ],
+                correctOption: 'b',
+                successMsg: "Μπράβο! √(-7)² = √49 = |-7| = 7 και ⁴√((-10)⁴) = |-10| = 10.",
+                errorMsg: () => "Έπεσες στην κλασική παγίδα! Επειδή η ρίζα είναι πάντοτε μη αρνητική, παίρνουμε την απόλυτη τιμή: |-7| = 7 και |-10| = 10."
+            },
+            {
+                mode: 'props_lab',
+                tag: "ΒΗΜΑ 4 / ΕΡΓΑΣΤΗΡΙ ΙΔΙΟΤΗΤΩΝ",
+                title: "Γινόμενο & Πηλίκο vs Άθροισμα & Διαφορά",
+                desc: "Δοκίμασε τιμές για τα <strong>α, β ≥ 0</strong> στον πίνακα αριστερά! Παρατήρησε πότε οι δύο στήλες δίνουν <strong>ακριβώς το ίδιο αποτέλεσμα</strong> και απάντησε: Ποιες πράξεις «σπάνε» σε δύο ρίζες;",
+                hint: "Δοκίμασε π.χ. α = 9, β = 16 στον πίνακα αριστερά: √(9+16) = √25 = 5, ενώ √9 + √16 = 3 + 4 = 7 ≠ 5!",
+                theoryTitle: "Ιδιότητες Ριζών (§2.4)",
+                theoryText: "Για α ≥ 0 και β ≥ 0 (β > 0 στο πηλίκο), η ρίζα διατηρείται στον <strong>πολλαπλασιασμό</strong> και στη <strong>διαίρεση</strong>, αλλά <strong>ΟΧΙ</strong> στην πρόσθεση και την αφαίρεση.",
+                theoryFormula: "√(α·β) = √α · √β   |   √(α+β) ≠ √α + √β (γενικά)",
+                options: [
+                    { id: 'a', label: 'Μόνο Γινόμενο & Πηλίκο' },
+                    { id: 'b', label: 'Όλες οι πράξεις (+, -, ·, :)' },
+                    { id: 'c', label: 'Μόνο Άθροισμα & Διαφορά' },
+                    { id: 'd', label: 'Καμία πράξη' }
+                ],
+                correctOption: 'a',
+                successMsg: "Τέλεια! Όπως φαίνεται και στον πίνακα δοκιμών, η ρίζα «σπάει» μόνο στο γινόμενο και στο πηλίκο, ποτέ γενικά στο άθροισμα ή τη διαφορά!",
+                errorMsg: () => "Κοίταξε τον πίνακα δοκιμών αριστερά με α = 9 και β = 16: στο γινόμενο και στο πηλίκο οι τιμές ταυτίζονται, ενώ στο άθροισμα (5 ≠ 7) διαφέρουν!"
+            },
+            {
+                mode: 'quiz',
+                tag: "ΒΗΜΑ 5 / ΓΕΝΙΚΕΥΣΗ ν-ΟΣΤΗΣ ΡΙΖΑΣ",
+                title: "ν-οστή Ρίζα & Ρίζα Ρίζας",
+                desc: "Σύμφωνα με τον ορισμό της ν-οστής ρίζας (§2.4) και την ιδιότητα <strong>ᵐ√(ⁿ√α) = ᵐ·ⁿ√α</strong>, πόσο ισούται η παράσταση <strong>³√64 + √(³√64)</strong>;",
+                hint: "Αφού 4³ = 64, έχουμε ³√64 = 4. Επίσης √(³√64) = ⁶√64 = 2 (γιατί 2⁶ = 64).",
+                theoryTitle: "Ορισμός ν-οστής Ρίζας & Ιδιότητα",
+                theoryText: "Για <strong>α ≥ 0</strong> και ν, μ ∈ ℕ*, η <strong>ⁿ√α</strong> είναι ο μη αρνητικός αριθμός με (ⁿ√α)ⁿ = α, ενώ ισχύει <strong>ᵐ√(ⁿ√α) = ᵐ·ⁿ√α</strong>.",
+                theoryFormula: "³√64 = 4   και   √(³√64) = ⁶√64 = 2",
+                options: [
+                    { id: 'a', label: '6' },
+                    { id: 'b', label: '8' },
+                    { id: 'c', label: '12' },
+                    { id: 'd', label: '4' }
+                ],
+                correctOption: 'a',
+                successMsg: "Εξαιρετικά! ³√64 = 4 και √(³√64) = ⁶√64 = 2, άρα 4 + 2 = 6!",
+                errorMsg: () => "Υπολόγισε ξεχωριστά: ³√64 = 4 (επειδή 4³ = 64) και √(³√64) = √4 = 2 (ή ⁶√64 = 2). Άρα 4 + 2 = 6."
+            }
+        ];
+
+        let currentMissionIdx = 0;
+        let attempts = [0, 0, 0, 0, 0];
+        let usedHint = [false, false, false, false, false];
+        let missionStars = [0, 0, 0, 0, 0];
+        let sliderVal = 2;
+        let selectedOption = null;
+
+        // Τιμές για το Εργαστήρι Ιδιοτήτων (Βήμα 4)
+        let propA = 9;
+        let propB = 16;
+
+        // --- ΕΝΗΜΕΡΩΣΗ ΑΡΙΣΤΕΡΗΣ ΟΠΤΙΚΗΣ ΣΚΗΝΗΣ ---
+        function renderVisualStage(idx, solved = false) {
+            const stageTitle = document.getElementById('stage-title');
+            const stageSub = document.getElementById('stage-subtitle');
+            const stageContent = document.getElementById('stage-content');
+
+            if (idx === 0) {
+                stageTitle.textContent = "ΓΕΩΜΕΤΡΙΚΟ ΜΟΝΤΕΛΟ ΤΕΤΡΑΓΩΝΟΥ";
+                stageSub.textContent = `Πλευρά x = ${sliderVal} · Εμβαδόν E = ${sliderVal * sliderVal}`;
+
+                let cells = '';
+                for (let i = 0; i < sliderVal * sliderVal; i++) {
+                    cells += '<div class="square-cell"></div>';
+                }
+
+                stageContent.innerHTML = `
+                    <div class="geo-box-wrapper">
+                        <div class="square-grid ${solved ? 'solved' : ''}" style="grid-template-columns: repeat(${sliderVal}, 26px);">
+                            ${cells}
+                        </div>
+                        <div class="geo-caption">x² = ${sliderVal * sliderVal}  ⇔  x = √${sliderVal * sliderVal} = ${sliderVal} (x ≥ 0)</div>
+                    </div>
+                `;
+            } else if (idx === 1) {
+                stageTitle.textContent = "ΣΥΓΚΡΙΣΗ: ΕΞΙΣΩΣΗ VS ΡΙΖΙΚΟ";
+                stageSub.textContent = "§2.4 Σχολικού Βιβλίου";
+                stageContent.innerHTML = `
+                    <div class="props-table-wrap">
+                        <table class="props-table">
+                            <thead>
+                                <tr>
+                                    <th>Μαθηματική Έκφραση</th>
+                                    <th>Τι ζητάει;</th>
+                                    <th>Αποτέλεσμα</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>x² = 9</strong></td>
+                                    <td>Όλους τους πραγματικούς x με x² = 9</td>
+                                    <td><span class="badge-ok">x = 3 ή x = -3</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>√9</strong></td>
+                                    <td>Μόνο τη <strong>μη αρνητική</strong> λύση (≥ 0)</td>
+                                    <td><span class="badge-ok">√9 = 3</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>√-9</strong></td>
+                                    <td>Ορίζεται μόνο για α ≥ 0</td>
+                                    <td><span class="badge-no">Δεν ορίζεται στο ℝ</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else if (idx === 2) {
+                stageTitle.textContent = "ΠΙΝΑΚΑΣ ΕΛΕΓΧΟΥ: ⁿ√(αⁿ) = |α|";
+                stageSub.textContent = "Άρτιος εκθέτης & ρίζα";
+                stageContent.innerHTML = `
+                    <div class="props-table-wrap">
+                        <table class="props-table">
+                            <thead>
+                                <tr>
+                                    <th>Παράσταση</th>
+                                    <th>Ενδιάμεσο Βήμα</th>
+                                    <th>Τελική Τιμή (≥ 0)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>√((-7)²)</strong></td>
+                                    <td>√49</td>
+                                    <td><span class="badge-ok">|-7| = 7</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>⁴√((-10)⁴)</strong></td>
+                                    <td>⁴√10000</td>
+                                    <td><span class="badge-ok">|-10| = 10</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>√(α²)</strong></td>
+                                    <td>Για κάθε α ∈ ℝ</td>
+                                    <td><span class="badge-ok">|α|</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else if (idx === 3) {
+                stageTitle.textContent = "ΠΙΝΑΚΑΣ ΔΟΚΙΜΩΝ ΙΔΙΟΤΗΤΩΝ";
+                stageSub.textContent = `Τιμές: α = ${propA}, β = ${propB}`;
+
+                const fmt = (num) => Number.isInteger(num) ? num : num.toFixed(2);
+
+                const prodLeft = Math.sqrt(propA * propB);
+                const prodRight = Math.sqrt(propA) * Math.sqrt(propB);
+
+                const quotLeft = Math.sqrt(propA / propB);
+                const quotRight = Math.sqrt(propA) / Math.sqrt(propB);
+
+                const sumLeft = Math.sqrt(propA + propB);
+                const sumRight = Math.sqrt(propA) + Math.sqrt(propB);
+
+                const diffValid = propA >= propB;
+                const diffLeft = diffValid ? fmt(Math.sqrt(propA - propB)) : "Δεν ορίζεται";
+                const diffRight = fmt(Math.sqrt(propA) - Math.sqrt(propB));
+
+                const sumEqual = Math.abs(sumLeft - sumRight) < 1e-6;
+                const diffEqual = diffValid && Math.abs(Math.sqrt(propA - propB) - (Math.sqrt(propA) - Math.sqrt(propB))) < 1e-6;
+
+                stageContent.innerHTML = `
+                    <div class="props-table-wrap">
+                        <table class="props-table">
+                            <thead>
+                                <tr>
+                                    <th>Πράξη</th>
+                                    <th>Ρίζα της πράξης</th>
+                                    <th>Ξεχωριστές ρίζες</th>
+                                    <th>Ισχύει;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Γινόμενο</strong></td>
+                                    <td>√(${propA}·${propB}) = <strong>${fmt(prodLeft)}</strong></td>
+                                    <td>√${propA}·√${propB} = <strong>${fmt(prodRight)}</strong></td>
+                                    <td><span class="badge-ok">ΝΑΙ (=)</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Πηλίκο</strong></td>
+                                    <td>√(${propA}/${propB}) = <strong>${fmt(quotLeft)}</strong></td>
+                                    <td>√${propA}/√${propB} = <strong>${fmt(quotRight)}</strong></td>
+                                    <td><span class="badge-ok">ΝΑΙ (=)</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Άθροισμα</strong></td>
+                                    <td>√(${propA}+${propB}) = <strong>${fmt(sumLeft)}</strong></td>
+                                    <td>√${propA}+√${propB} = <strong>${fmt(sumRight)}</strong></td>
+                                    <td>${sumEqual ? '<span class="badge-ok">Τυχαία (=)</span>' : '<span class="badge-no">ΟΧΙ (≠)</span>'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Διαφορά</strong></td>
+                                    <td>√(${propA}-${propB}) = <strong>${diffLeft}</strong></td>
+                                    <td>√${propA}-√${propB} = <strong>${diffRight}</strong></td>
+                                    <td>${diffEqual ? '<span class="badge-ok">Τυχαία (=)</span>' : '<span class="badge-no">ΟΧΙ (≠)</span>'}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else if (idx === 4) {
+                stageTitle.textContent = "Ν-ΟΣΤΗ ΡΙΖΑ & ΡΙΖΑ ΡΙΖΑΣ";
+                stageSub.textContent = "§2.4 Γενίκευση";
+                stageContent.innerHTML = `
+                    <div class="props-table-wrap">
+                        <table class="props-table">
+                            <thead>
+                                <tr>
+                                    <th>Ιδιότητα</th>
+                                    <th>Παράδειγμα</th>
+                                    <th>Επαλήθευση</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>ⁿ√α = x ⇔ xⁿ = α</strong> (x ≥ 0)</td>
+                                    <td>³√64 = 4</td>
+                                    <td><span class="badge-ok">4³ = 64</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>ᵐ√(ⁿ√α) = ᵐ·ⁿ√α</strong></td>
+                                    <td>√(³√64) = ⁶√64 = 2</td>
+                                    <td><span class="badge-ok">2⁶ = 64</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+        }
+
+        // --- ΕΠΙΛΟΓΗ ΒΗΜΑΤΟΣ ---
+        function selectMission(idx) {
+            playSound('click');
+            currentMissionIdx = idx;
+            const m = missions[idx];
+            selectedOption = null;
+
+            document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === idx);
+            });
+
+            document.getElementById('theory-title').textContent = m.theoryTitle;
+            document.getElementById('theory-text').innerHTML = m.theoryText;
+            document.getElementById('theory-formula').textContent = m.theoryFormula;
+
+            document.getElementById('mission-tag').textContent = m.tag;
+            document.getElementById('mission-title').textContent = m.title;
+            document.getElementById('mission-desc').innerHTML = m.desc;
+
+            const hintBox = document.getElementById('hint-box');
+            hintBox.style.display = 'none';
+            hintBox.textContent = m.hint;
+
+            const fb = document.getElementById('feedback-box');
+            fb.className = 'feedback-box';
+            fb.style.display = 'none';
+
+            const area = document.getElementById('interaction-area');
+            const readout = document.getElementById('live-readout');
+
+            if (m.mode === 'square_slider') {
+                sliderVal = 2;
+                area.innerHTML = `
+                    <div class="slider-item">
+                        <div class="slider-label">
+                            <span>Πλευρά τετραγώνου (x)</span>
+                            <span class="val-pill"><span id="val-x">${sliderVal}</span> μον.</span>
+                        </div>
+                        <input type="range" id="slider-x" min="1" max="7" value="${sliderVal}" oninput="onSquareSliderChange()">
+                    </div>
+                `;
+                readout.style.display = 'flex';
+                onSquareSliderChange(false);
+            } else if (m.mode === 'props_lab') {
+                readout.style.display = 'none';
+                let btnsHtml = `
+                    <div class="slider-item">
+                        <div class="slider-label">
+                            <span>Δοκίμασε τιμές α, β (για τον πίνακα αριστερά):</span>
+                            <span class="val-pill">α = <span id="lbl-a">${propA}</span>, β = <span id="lbl-b">${propB}</span></span>
+                        </div>
+                        <div class="preset-row" style="margin-bottom: 10px;">
+                            <button class="preset-btn" onclick="setProps(9, 16)">α = 9, β = 16</button>
+                            <button class="preset-btn" onclick="setProps(4, 25)">α = 4, β = 25</button>
+                            <button class="preset-btn" onclick="setProps(36, 9)">α = 36, β = 9</button>
+                            <button class="preset-btn" onclick="setProps(0, 16)">α = 0, β = 16</button>
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <small style="color:var(--text-muted)">Τιμή α: <strong id="val-pa">${propA}</strong></small>
+                                <input type="range" id="slider-pa" min="0" max="36" value="${propA}" oninput="onPropsSliderChange()">
+                            </div>
+                            <div>
+                                <small style="color:var(--text-muted)">Τιμή β: <strong id="val-pb">${propB}</strong></small>
+                                <input type="range" id="slider-pb" min="1" max="36" value="${propB}" oninput="onPropsSliderChange()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="options-grid">
+                `;
+                m.options.forEach(opt => {
+                    btnsHtml += `<button class="option-btn" id="opt-${opt.id}" onclick="selectOption('${opt.id}')">${opt.label}</button>`;
+                });
+                btnsHtml += '</div>';
+                area.innerHTML = btnsHtml;
+            } else {
+                readout.style.display = 'none';
+                let btnsHtml = '<div class="options-grid">';
+                m.options.forEach(opt => {
+                    btnsHtml += `<button class="option-btn" id="opt-${opt.id}" onclick="selectOption('${opt.id}')">${opt.label}</button>`;
+                });
+                btnsHtml += '</div>';
+                area.innerHTML = btnsHtml;
+            }
+
+            renderVisualStage(idx, missionStars[idx] > 0);
+        }
+
+        function onSquareSliderChange(withSound = true) {
+            if (withSound) playSound('tick');
+            sliderVal = parseInt(document.getElementById('slider-x').value);
+            document.getElementById('val-x').textContent = sliderVal;
+            document.getElementById('readout-label').textContent = 'Τρέχον Εμβαδόν Τετραγώνου (x²):';
+            document.getElementById('readout-val').textContent = `${sliderVal * sliderVal}`;
+            renderVisualStage(0, false);
+        }
+
+        function setProps(a, b) {
+            playSound('click');
+            propA = a;
+            propB = b;
+            document.getElementById('slider-pa').value = a;
+            document.getElementById('slider-pb').value = b;
+            updatePropsDisplay();
+        }
+
+        function onPropsSliderChange() {
+            playSound('tick');
+            propA = parseInt(document.getElementById('slider-pa').value);
+            propB = parseInt(document.getElementById('slider-pb').value);
+            updatePropsDisplay();
+        }
+
+        function updatePropsDisplay() {
+            document.getElementById('lbl-a').textContent = propA;
+            document.getElementById('lbl-b').textContent = propB;
+            document.getElementById('val-pa').textContent = propA;
+            document.getElementById('val-pb').textContent = propB;
+            renderVisualStage(3, missionStars[3] > 0);
+        }
+
+        function selectOption(optId) {
+            playSound('click');
+            selectedOption = optId;
+            document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('opt-' + optId).classList.add('selected');
+        }
+
+        function toggleHint() {
+            playSound('click');
+            const hintBox = document.getElementById('hint-box');
+            if (hintBox.style.display === 'block') {
+                hintBox.style.display = 'none';
+            } else {
+                hintBox.style.display = 'block';
+                usedHint[currentMissionIdx] = true;
+            }
+        }
+
+        function checkSolution() {
+            const m = missions[currentMissionIdx];
+            const fb = document.getElementById('feedback-box');
+            let isCorrect = false;
+
+            if (m.mode === 'square_slider') {
+                isCorrect = m.validate(sliderVal);
+            } else {
+                if (!selectedOption) {
+                    fb.className = 'feedback-box error';
+                    fb.innerHTML = '⚠️ Επίλεξε πρώτα μία από τις απαντήσεις!';
+                    return;
+                }
+                isCorrect = (selectedOption === m.correctOption);
+            }
+
+            if (isCorrect) {
+                playSound('success');
+                if (missionStars[currentMissionIdx] === 0) {
+                    let stars = 3;
+                    if (usedHint[currentMissionIdx] || attempts[currentMissionIdx] === 1) stars = 2;
+                    if (attempts[currentMissionIdx] >= 2) stars = 1;
+                    missionStars[currentMissionIdx] = stars;
+                    updateScoreUI();
+                }
+                renderVisualStage(currentMissionIdx, true);
+                fb.className = 'feedback-box success';
+                fb.innerHTML = `✅ ${m.successMsg}`;
+            } else {
+                playSound('error');
+                attempts[currentMissionIdx]++;
+                fb.className = 'feedback-box error';
+                fb.innerHTML = `❌ ${m.errorMsg(sliderVal)}`;
+            }
+        }
+
+        function updateScoreUI() {
+            const total = missionStars.reduce((a, b) => a + b, 0);
+            document.getElementById('stars-count').textContent = total;
+
+            missionStars.forEach((s, i) => {
+                const tab = document.getElementById('tab-' + i);
+                const starSpan = document.getElementById('tstars-' + i);
+                if (s > 0) {
+                    tab.classList.add('solved');
+                    starSpan.textContent = '★'.repeat(s) + '☆'.repeat(3 - s);
+                } else {
+                    tab.classList.remove('solved');
+                    starSpan.textContent = '☆☆☆';
+                }
+            });
+        }
+
+        function resetGame() {
+            playSound('click');
+            attempts = [0, 0, 0, 0, 0];
+            usedHint = [false, false, false, false, false];
+            missionStars = [0, 0, 0, 0, 0];
+            propA = 9;
+            propB = 16;
+            updateScoreUI();
+            selectMission(0);
+        }
+
+        selectMission(0);
+    </script>
+</body>
+</html>
